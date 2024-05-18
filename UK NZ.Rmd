@@ -493,24 +493,37 @@ geom_text(aes(label = ifelse(percent > 2, paste0(percent, "%"), "")),
 
 # Power
 ```{r}
-power <- read.csv(file = "EM yearly generation data.csv") %>% 
+power <- read.csv(file = "EM yearly generation data.csv",) %>% 
   rename(Year="Time") %>% 
   mutate(Year=substr(Year,1,4)) %>% 
   pivot_longer(cols = 2:9,names_to = "Source") %>% 
   group_by(Year) %>% 
   mutate(percent=round(value/sum(value)*100,0))
 
-ggplot(power) +
-  aes(x = Year, y = value, fill = Source) +
-  geom_col() +
-geom_text(aes(label = ifelse(percent > 2, paste0(percent, "%"), "")),
-            position = position_stack(vjust = 0.5), size = 3, color = "black") +# Adjust the position and size of the text
+power_total <- power %>%
+  group_by(Year) %>%
+  summarize(total_value = sum(value))
+
+ggplot() +
+  geom_col(power,mapping = aes(x = Year, y = value, fill = Source))+
+geom_text(power,mapping=aes(x = Year, y = value, fill=Source, label = ifelse(percent > 2, paste0(percent, "%"), "")),
+            position = position_stack(vjust = 0.5), size = 3, color = "black")+ # Adjust the position and size of the text
+  geom_text(data = power_total, aes(x = Year, y = total_value, label = round(total_value,0)),
+            vjust = -0.5, size = 4, color = "black")+  # Add total values on top of bars
  ggthemes::theme_pander() +
-  labs(x = "", y = "Electricity Generation (MU)",caption = "EM: Public state yearly industry energy use emissions")+
+  labs(x = "", y = "Electricity Generation (MU)",caption = "Source: CEA")+
   scale_fill_ucscgb()+
   theme(legend.position = "top",
         axis.text.x = element_text(size = 9, angle = 45, vjust = 0.8, hjust = 0.8))+
 guides(fill = guide_legend(nrow = 2))  # Set the number of rows in the legend
+
+ggsave("output_plots/power_generation.png",
+  device = "png", dpi = "print",
+  width = 8, height = 6
+)
+
+
+
 ```
 
 # Macroeconomy
