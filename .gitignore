@@ -4,3 +4,4 @@
 .Ruserdata
 output_plots
 *.xlsx
+data/*.dat
