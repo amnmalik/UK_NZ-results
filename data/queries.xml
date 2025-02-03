@@ -1,0 +1,604 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<queries>
+  
+  <!-- Emissions -->
+  <aQuery>
+	<all-regions/>
+	<!-- <emissionsQueryBuilder title="CO2 emissions by aggregate sector">
+    <axis1 name="sector">sector</axis1>
+    <axis2 name="Year">emissions</axis2>
+    <xPath buildList="true" dataName="emissions" group="false" sumAll="false">*[@type='sector']//CO2/emissions/node()</xPath>
+    <comments/>
+	<labelRewriteList append-values="false">
+        <level name="sector">
+            <rewrite from="electricity" to="Power"/>
+            <rewrite from="Agriculture_enuse" to="Industry"/>
+            <rewrite from="Chem_Fert_enuse" to="Industry"/>
+			<rewrite from="Chem_Fert_fsuse" to="IPPU"/>
+            <rewrite from="Fisheries_enuse" to="Industry"/>
+			<rewrite from="Other Industries_fsuse" to="IPPU"/>
+			<rewrite from="process heat cement" to="Industry"/>
+            <rewrite from="Food Processing_enuse" to="Industry"/>
+            <rewrite from="Iron and Steel_enuse" to="Industry"/>
+            <rewrite from="Iron and Steel_fsuse" to="IPPU"/>
+            <rewrite from="Non-Ferrous Metals_enuse" to="Industry"/>
+            <rewrite from="Other Industries_enuse" to="Industry"/>
+            <rewrite from="Paper and Pulp_enuse" to="Industry"/>
+			<rewrite from="oil refining" to="oil refining"/>
+			<rewrite from="cement" to="IPPU"/>
+            <rewrite from="comm cooking" to="Building"/>
+            <rewrite from="comm hvac" to="Building"/>
+			<rewrite from="comm lighting" to="Building"/>
+            <rewrite from="comm others" to="Building"/>
+			<rewrite from="comm ref" to="Building"/>
+			<rewrite from="resid rural apploth" to="Building"/>
+            <rewrite from="resid rural cooking" to="Building"/>
+			<rewrite from="resid rural space heating" to="Building"/>
+            <rewrite from="resid rural lighting" to="Building"/>
+			<rewrite from="resid rural coolers" to="Building"/>
+            <rewrite from="resid rural cooling" to="Building"/>
+			<rewrite from="resid urban apploth" to="Building"/>
+            <rewrite from="resid urban cooking" to="Building"/>
+			<rewrite from="resid urban space heating" to="Building"/>
+            <rewrite from="resid urban lighting" to="Building"/>
+			<rewrite from="resid urban coolers" to="Building"/>
+            <rewrite from="resid urban cooling" to="Building"/>
+			<rewrite from="trn_aviation_intl" to="Transport"/>
+			<rewrite from="trn_freight" to="Transport"/>
+            <rewrite from="trn_freight_road" to="Transport"/>
+			<rewrite from="trn_pass" to="Transport"/>
+			<rewrite from="trn_pass_road" to="Transport"/>
+            <rewrite from="trn_pass_road_LDV" to="Transport"/>
+			<rewrite from="trn_pass_road_LDV_2W" to="Transport"/>
+			<rewrite from="trn_pass_road_LDV_4W" to="Transport"/>
+            <rewrite from="trn_shipping_intl" to="Transport"/>
+			<rewrite from="biomass liquids" to="biomass liquids"/>
+        </level>
+    </labelRewriteList>
+	</emissionsQueryBuilder> -->
+	<emissionsQueryBuilder title="CO2 emissions by tech">
+    <axis1 name="technology">technology</axis1>
+    <axis2 name="Year">emissions</axis2>
+    <xPath buildList="true" dataName="emissions" group="false" sumAll="false">*[@type = 'sector' ]/*[@type='subsector']/*[@type='technology']//
+            CO2/emissions/node()</xPath>
+    <comments/>
+</emissionsQueryBuilder>	
+	</aQuery>
+
+	<aQuery>
+	<all-regions/>
+	<emissionsQueryBuilder title="CO2 emissions by subsector">
+                <axis1 name="subsector">subsector</axis1>
+                <axis2 name="Year">emissions</axis2>
+                <xPath buildList="true" dataName="emissions"
+                    group="false" sumAll="false">*[@type = 'sector' ]/*[@type='subsector']//CO2/emissions/node()</xPath>
+                <comments/>
+            </emissionsQueryBuilder>
+	</aQuery>
+    
+	
+	<!-- Socioeconomics -->
+    <aQuery>
+	<all-regions/>
+         <gdpQueryBuilder title="GDP by region">
+            <axis1 name="region">region</axis1>
+            <axis2 name="Year">gdp-mer</axis2>
+            <xPath buildList="true" dataName="gdp-mer" group="false" sumAll="false">GDP/gdp-mer/text()</xPath>
+            <comments/>
+         </gdpQueryBuilder>
+      </aQuery>
+
+      <aQuery>
+	<all-regions/>
+        <gdpQueryBuilder title="PPP GDP by region">
+          <axis1 name="Region">region</axis1>
+          <axis2 name="Year">gdp-per-capita-ppp</axis2>
+          <xPath buildList="true" dataName="gdp-per-capita-ppp" group="false" sumAll="false">GDP/gdp-per-capita-ppp/text()</xPath>
+          <comments/>
+	</gdpQueryBuilder>
+      </aQuery>
+
+      <aQuery>
+	<all-regions/>
+         <demographicsQuery title="Population by region">
+            <axis1 name="region">region</axis1>
+            <axis2 name="Year">populationMiniCAM</axis2>
+            <xPath buildList="true" dataName="total-population" group="false" sumAll="false">demographics/populationMiniCAM/total-population/node()</xPath>
+            <comments/>
+         </demographicsQuery>
+      </aQuery>
+	
+	<!-- Electricity sector-->
+	<aQuery>
+    <all-regions/>
+    <supplyDemandQuery title="elec gen by region (incl CHP)">
+    <axis1 name="region">region</axis1>
+    <axis2 name="Year">physical-output[@vintage]</axis2>
+    <xPath buildList="true" dataName="output" group="false" sumAll="true">*[@type='sector' (:collapse:)]//
+               *[@type='technology' (:collapse:) and not (@name='elect_td_bld')]/
+               *[@type='output' (:collapse:)  and (@name='electricity' or @name='elect_td_bld')]/
+               physical-output/node()</xPath>
+    <comments/>
+	</supplyDemandQuery>
+  </aQuery>
+
+	<aQuery>
+    <all-regions/>
+    <supplyDemandQuery title="elec gen by subsector">
+                    <axis1 name="subsector">subsector</axis1>
+                    <axis2 name="Year">physical-output[@vintage]</axis2>
+                    <xPath buildList="true" dataName="output"
+                        group="false" sumAll="false">*[@type='sector' (:collapse:) and (@name='electricity' or @name='elect_td_bld')]/
+               *[@type='subsector' and not (@name='elect_td_bld')]//*[@type='output']/
+               physical-output/node()</xPath>
+    <comments/>
+	</supplyDemandQuery>
+	</aQuery>
+
+	<!-- Final energy Consumption -->
+	
+   <aQuery>
+     <all-regions/>
+     <supplyDemandQuery title="total final energy by region">
+    <axis1 name="region">region</axis1>
+    <axis2 name="Year">demand-physical[@vintage]</axis2>
+    <xPath buildList="true" dataName="input" group="false" sumAll="false">*[@type='sector' (:collapse:) and ((@name='building' or @name='industry' or @name='transportation') or
+            (exists(child::keyword/@final-energy)))]//*[@type='input' (:collapse:) and
+            not(@name='limestone' or @name='process heat cement' or @name='industrial energy use' or
+                @name='industrial feedstocks' or @name='renewable' or contains(@name, 'trn_') or @name='oil-credits')]/
+            demand-physical[@unit='EJ']/node()</xPath>
+    <comments/>
+	</supplyDemandQuery>
+
+   </aQuery>
+
+	<aQuery>
+     <all-regions/>
+     <supplyDemandQuery title="final energy consumption by sector and fuel">
+                    <axis1 name="input">input</axis1>
+                    <axis2 name="Year">demand-physical[@vintage]</axis2>
+                    <xPath buildList="true" dataName="input"
+                        group="false" sumAll="false">*[@type='sector' and ((@name='building' or @name='industry' or @name='transportation') or
+            (exists(child::keyword/@final-energy)))]//*[@type='input' and
+            not(@name='limestone' or @name='process heat cement' or @name='industrial energy use' or
+                @name='industrial feedstocks' or @name='renewable' or contains(@name, 'trn_') or @name='oil-credits')]/
+            demand-physical[@unit='EJ']/node()</xPath>
+                    <comments/>
+                    <labelRewriteList append-values="false">
+                        <level name="input">
+                            <rewrite from="wholesale gas" to="gas"/>
+                            <rewrite from="regional coal" to="coal"/>
+                            <rewrite from="refined liquids enduse" to="refined liquids"/>
+                            <rewrite from="regional biomass" to="biomass"/>
+                            <rewrite from="H2 enduse" to="hydrogen"/>
+                            <rewrite from="elect_td_ind" to="electricity"/>
+							<rewrite from="elect_td_res" to="electricity"/>
+							<rewrite from="elect_td_com" to="electricity"/>
+                            <rewrite from="delivered biomass" to="biomass"/>
+                            <rewrite from="elect_td_trn" to="electricity"/>
+                            <rewrite from="delivered coal" to="coal"/>
+                            <rewrite from="refined liquids industrial" to="refined liquids"/>
+                            <rewrite from="delivered gas" to="gas"/>
+                        </level>
+                    </labelRewriteList>
+                </supplyDemandQuery>
+
+    </aQuery>
+	
+	
+	<aQuery>
+	<all-regions/>
+	<supplyDemandQuery title="final energy consumption by aggregate sector and fuel">
+    <axis1 name="input">input</axis1>
+    <axis2 name="Year">demand-physical[@vintage]</axis2>
+    <xPath buildList="true" dataName="input" group="false" sumAll="false">*[@type='sector' and ((@name='building' or @name='industry' or @name='transportation') or
+            (exists(child::keyword/@final-energy)))]//*[@type='input' and
+            not(@name='limestone' or @name='process heat cement' or @name='industrial energy use' or
+                @name='industrial feedstocks' or @name='renewable' or contains(@name, 'trn_') or @name='oil-credits')]/
+            demand-physical[@unit='EJ']/node()</xPath>
+    <comments/>
+	<labelRewriteList append-values="false">
+        <level name="sector">
+            <rewrite from="Agriculture_enuse" to="Agriculture"/>
+            <rewrite from="Chem_Fert_enuse" to="Industry"/>
+			<rewrite from="Chem_Fert_fsuse" to="Industry"/>
+            <rewrite from="Fisheries_enuse" to="Industry"/>
+			<rewrite from="Other Industries_fsuse" to="Industry"/>
+			<rewrite from="process heat cement" to="Industry"/>
+            <rewrite from="Food Processing_enuse" to="Industry"/>
+            <rewrite from="Iron and Steel_enuse" to="Industry"/>
+            <rewrite from="Iron and Steel_fsuse" to="Industry"/>
+            <rewrite from="Non-Ferrous Metals_enuse" to="Industry"/>
+            <rewrite from="Other Industries_enuse" to="Industry"/>
+            <rewrite from="Paper and Pulp_enuse" to="Industry"/>
+            <rewrite from="cement" to="Industry"/>
+            <rewrite from="comm cooking" to="Building"/>
+            <rewrite from="comm hvac" to="Building"/>
+			<rewrite from="comm lighting" to="Building"/>
+            <rewrite from="comm others" to="Building"/>
+			<rewrite from="comm ref" to="Building"/>
+			<rewrite from="resid rural apploth" to="Building"/>
+            <rewrite from="resid rural cooking" to="Building"/>
+			<rewrite from="resid rural space heating" to="Building"/>
+            <rewrite from="resid rural lighting" to="Building"/>
+			<rewrite from="resid rural coolers" to="Building"/>
+            <rewrite from="resid rural cooling" to="Building"/>
+			<rewrite from="resid urban apploth" to="Building"/>
+            <rewrite from="resid urban cooking" to="Building"/>
+			<rewrite from="resid urban space heating" to="Building"/>
+            <rewrite from="resid urban lighting" to="Building"/>
+			<rewrite from="resid urban coolers" to="Building"/>
+            <rewrite from="resid urban cooling" to="Building"/>
+			<rewrite from="trn_aviation_intl" to="Transport"/>
+			<rewrite from="trn_freight" to="Transport"/>
+            <rewrite from="trn_freight_road" to="Transport"/>
+			<rewrite from="trn_pass" to="Transport"/>
+			<rewrite from="trn_pass_road" to="Transport"/>
+            <rewrite from="trn_pass_road_LDV" to="Transport"/>
+			<rewrite from="trn_pass_road_LDV_2W" to="Transport"/>
+			<rewrite from="trn_pass_road_LDV_4W" to="Transport"/>
+            <rewrite from="trn_shipping_intl" to="Transport"/>
+		</level>
+        <level name="input">
+            <rewrite from="elect_td_bld" to="electricity"/>
+			<rewrite from="elect_td_res" to="electricity"/>
+			<rewrite from="elect_td_com" to="electricity"/>
+            <rewrite from="wholesale gas" to="gas"/>
+            <rewrite from="regional coal" to="coal"/>
+            <rewrite from="refined liquids enduse" to="refined liquids"/>
+            <rewrite from="regional biomass" to="biomass"/>
+            <rewrite from="H2 enduse" to="hydrogen"/>
+            <rewrite from="elect_td_ind" to="electricity"/>
+            <rewrite from="delivered biomass" to="biomass"/>
+            <rewrite from="elect_td_trn" to="electricity"/>
+            <rewrite from="delivered coal" to="coal"/>
+            <rewrite from="refined liquids industrial" to="refined liquids"/>
+            <rewrite from="delivered gas" to="gas"/>
+        </level>
+		</labelRewriteList>
+</supplyDemandQuery>
+
+	</aQuery>
+   
+
+	<!-- Transport -->
+	<aQuery>
+	<all-regions/>
+	<supplyDemandQuery title="transport service output by mode">
+    <axis1 name="mode">subsector</axis1>
+    <axis2 name="Year">physical-output[@vintage]</axis2>
+    <xPath buildList="true" dataName="output" group="false" sumAll="false">*[@type='sector' and (@name='transportation' or (exists(child::keyword[@final-energy='transportation'])))]/
+               *[@type='subsector']//*[@type='output' (:collapse:) and not(@name='CAFEcredit')]/
+               physical-output/node()</xPath>
+    <comments/>
+	<labelRewriteList append-values="false">
+	<level name="mode">
+		<rewrite from="Air International" to="Aviation"/>
+		<rewrite from="Freight Rail" to="Rail"/>
+		<rewrite from="Ship Domestic" to="Shipping"/>
+		<rewrite from="Air Domestic" to="Aviation"/>
+		<rewrite from="Passenger Rail" to="Rail"/>
+		<rewrite from="LDV_2W" to="2W"/>
+		<rewrite from="LDV_3W" to="3W"/>
+		<rewrite from="LDV_4W" to="4W"/>
+		<rewrite from="Ship International" to="Shipping"/>
+		<rewrite from="Walk" to="NMT"/>
+	</level>
+	</labelRewriteList>
+	</supplyDemandQuery>
+	</aQuery>
+	
+	<aQuery>
+	<all-regions/>
+	<supplyDemandQuery title="transport final energy by mode and fuel">
+    <axis1 name="mode">subsector</axis1>
+    <axis2 name="Year">demand-physical[@vintage]</axis2>
+    <xPath buildList="true" dataName="input" group="false" sumAll="false">*[@type='sector' and (@name='transportation' or (exists(child::keyword[@final-energy='transportation'])))]/
+               *[@type='subsector']//*[@type='input' and not (@name='renewable')]/
+               demand-physical[@unit='EJ']/node()</xPath>
+    <comments/>
+	<labelRewriteList append-values="false">
+	<level name="sector">
+		<rewrite from="trn_aviation_intl" to="Passenger"/>
+			<rewrite from="trn_freight" to="Freight"/>
+            <rewrite from="trn_freight_road" to="Freight"/>
+			<rewrite from="trn_pass" to="Passenger"/>
+			<rewrite from="trn_pass_road" to="Passenger"/>
+            <rewrite from="trn_pass_road_LDV" to="Passenger"/>
+			<rewrite from="trn_pass_road_LDV_2W" to="Passenger"/>
+			<rewrite from="trn_pass_road_LDV_4W" to="Passenger"/>
+            <rewrite from="trn_shipping_intl" to="Freight"/>
+			<rewrite from="trn_shipping_intl" to="Passenger"/>	
+			<rewrite from="trn_shipping_dom" to="Passenger"/>
+	</level>
+	<level name="mode">
+		<rewrite from="Air International" to="Aviation"/>
+		<rewrite from="Freight Rail" to="Rail"/>
+		<rewrite from="Ship Domestic" to="Shipping"/>
+		<rewrite from="Air Domestic" to="Aviation"/>
+		<rewrite from="Passenger Rail" to="Rail"/>
+		<rewrite from="LDV_2W" to="2W"/>
+		<rewrite from="LDV_3W" to="3W"/>
+		<rewrite from="LDV_4W" to="4W"/>
+		<rewrite from="Ship International" to="Shipping"/>
+		<rewrite from="Walk" to="NMT"/>
+	</level>	
+	</labelRewriteList>	
+	</supplyDemandQuery>
+	</aQuery>
+
+		
+	<aQuery>
+	<all-regions/>
+	<supplyDemandQuery title="transport final energy by fuel">
+    <axis1 name="input">input</axis1>
+    <axis2 name="Year">demand-physical[@vintage]</axis2>
+    <xPath buildList="true" dataName="input" group="false" sumAll="false">*[@type='sector' (:collapse:) and (@name='transportation' or (exists(child::keyword[@final-energy='transportation'])))]//
+               *[@type='input' and not (@name='renewable')]/demand-physical[@unit='EJ']/node()</xPath>
+    <comments/>
+	<labelRewriteList append-values="false">
+	<level name="input">
+		<rewrite from="wholesale gas" to="gas"/>
+		<rewrite from="regional coal" to="coal"/>
+		<rewrite from="refined liquids enduse" to="refined liquids"/>
+		<rewrite from="regional biomass" to="biomass"/>
+		<rewrite from="H2 enduse" to="hydrogen"/>
+		<rewrite from="elect_td_ind" to="electricity"/>
+		<rewrite from="elect_td_res" to="electricity"/>
+		<rewrite from="elect_td_com" to="electricity"/>
+		<rewrite from="elect_td_trn" to="electricity"/>
+		<rewrite from="delivered biomass" to="biomass"/>
+		<rewrite from="elect_td_trn" to="electricity"/>
+		<rewrite from="delivered coal" to="coal"/>
+		<rewrite from="refined liquids industrial" to="refined liquids"/>
+		<rewrite from="delivered gas" to="gas"/>
+	</level>
+	</labelRewriteList>
+	</supplyDemandQuery>
+	</aQuery>
+
+	
+	
+	
+	<!-- Buildings -->
+	   <aQuery>
+	<all-regions/>
+	<supplyDemandQuery title="Building floorspace">
+          <axis1 name="Building">gcam-consumer[@name]</axis1>
+          <axis2 name="Year">floorspace[@year]</axis2>
+          <xPath buildList="true" dataName="floorspace" group="false" sumAll="false">gcam-consumer//floorspace/node()</xPath>
+          <comments/>
+	</supplyDemandQuery>
+    </aQuery>
+	
+	<aQuery>
+	<all-regions/>	
+	<supplyDemandQuery title="building final energy by fuel">
+    <axis1 name="input">input</axis1>
+    <axis2 name="Year">demand-physical[@vintage]</axis2>
+    <xPath buildList="true" dataName="input" group="false" sumAll="false">*[@type='sector' (:collapse:) and (@name='building' or (exists(child::keyword[@final-energy='building'])))]//
+               *[@type='input']/demand-physical/node()</xPath>
+    <comments/>
+	<labelRewriteList append-values="false">
+	<level name="input">
+		<rewrite from="wholesale gas" to="natural gas"/>
+		<rewrite from="regional coal" to="coal"/>
+		<rewrite from="refined liquids enduse" to="refined liquids"/>
+		<rewrite from="regional biomass" to="biomass"/>
+		<rewrite from="H2 enduse" to="hydrogen"/>
+		<rewrite from="elect_td_ind" to="electricity"/>
+		<rewrite from="elect_td_res" to="electricity"/>
+		<rewrite from="elect_td_com" to="electricity"/>
+		<rewrite from="elect_td_trn" to="electricity"/>
+		<rewrite from="delivered biomass" to="biomass"/>
+		<rewrite from="elect_td_trn" to="electricity"/>
+		<rewrite from="delivered coal" to="coal"/>
+		<rewrite from="refined liquids industrial" to="refined liquids"/>
+		</level>
+		</labelRewriteList>
+    </supplyDemandQuery>
+	</aQuery>
+	
+	<aQuery>
+	<all-regions/>	
+	<supplyDemandQuery title="building total final energy by aggregate service">
+    <axis1 name="sector">sector</axis1>
+    <axis2 name="Year">demand-physical[@vintage]</axis2>
+    <xPath buildList="true" dataName="input" group="false" sumAll="false">*[@type='sector' and (@name='building' or (exists(child::keyword[@final-energy='building'])))]//
+               *[@type='input' (:collapse:)]/demand-physical/node()</xPath>
+    <comments/>
+	<labelRewriteList append-values="false">
+	<level name="sector">
+			<rewrite from="comm cooking" to="Cooking"/>
+            <rewrite from="comm hvac" to="Cooling"/>
+			<rewrite from="comm lighting" to="Lighting"/>
+            <rewrite from="comm others" to="Others"/>
+			<rewrite from="comm ref" to="Others"/>
+			<rewrite from="resid rural apploth" to="Others"/>
+            <rewrite from="resid rural cooking" to="Cooking"/>
+			<rewrite from="resid rural space heating" to="Heating"/>
+            <rewrite from="resid rural lighting" to="Lighting"/>
+			<rewrite from="resid rural coolers" to="Cooling"/>
+            <rewrite from="resid rural cooling" to="Cooling"/>
+			<rewrite from="resid urban apploth" to="Others"/>
+            <rewrite from="resid urban cooking" to="Cooking"/>
+			<rewrite from="resid urban space heating" to="Heating"/>
+            <rewrite from="resid urban lighting" to="Lighting"/>
+			<rewrite from="resid urban coolers" to="Cooling"/>
+            <rewrite from="resid urban cooling" to="Cooling"/>
+	</level>
+	</labelRewriteList>	
+    </supplyDemandQuery>
+	</aQuery>
+	
+	<aQuery>
+	<all-regions/>	
+	<supplyDemandQuery title="building final energy by service (Cooking) and fuel">
+    <axis1 name="sector">sector</axis1>
+    <axis2 name="Year">demand-physical[@vintage]</axis2>
+    <xPath buildList="true" dataName="input" group="false" sumAll="false">*[@type='sector' and (@name='building' or (exists(child::keyword[@final-energy='building'])))]//
+               *[@type='input']/demand-physical/node()</xPath>
+    <comments/>
+	<labelRewriteList append-values="false">
+	<level name="sector">
+			<rewrite from="comm cooking" to="Cooking"/>
+            <rewrite from="resid rural cooking" to="Cooking"/>
+			<rewrite from="resid urban cooking" to="Cooking"/>
+	</level>
+	<level name="input">
+		<rewrite from="wholesale gas" to="natural gas"/>
+		<rewrite from="regional coal" to="coal"/>
+		<rewrite from="refined liquids enduse" to="refined liquids"/>
+		<rewrite from="regional biomass" to="biomass"/>
+		<rewrite from="H2 enduse" to="hydrogen"/>
+		<rewrite from="elect_td_ind" to="electricity"/>
+		<rewrite from="elect_td_res" to="electricity"/>
+		<rewrite from="elect_td_com" to="electricity"/>
+		<rewrite from="elect_td_trn" to="electricity"/>
+		<rewrite from="delivered biomass" to="biomass"/>
+		<rewrite from="elect_td_trn" to="electricity"/>
+		<rewrite from="delivered coal" to="coal"/>
+		<rewrite from="refined liquids industrial" to="refined liquids"/>
+		</level>
+		</labelRewriteList>
+	</supplyDemandQuery>
+	</aQuery>
+
+	
+	<!-- Industry -->
+	<aQuery>
+	<all-regions/>
+	<supplyDemandQuery title="industry final energy by fuel">
+    <axis1 name="input">input</axis1>
+    <axis2 name="Year">demand-physical[@vintage]</axis2>
+    <xPath buildList="true" dataName="input" group="false" sumAll="false">*[@type='sector' (:collapse:) and (@name='industry' or (exists(child::keyword[@final-energy='industry'])))]//
+               *[@type='input' and (@name='delivered biomass' or @name='delivered coal' or
+               @name='H2 enduse' or @name='elect_td_ind' or @name='wholesale gas' or
+               @name='refined liquids industrial')]/demand-physical/node()</xPath>
+    <comments/>
+	<labelRewriteList append-values="false">
+	<level name="input">
+		<rewrite from="wholesale gas" to="natural gas"/>
+		<rewrite from="regional coal" to="coal"/>
+		<rewrite from="refined liquids enduse" to="refined liquids"/>
+		<rewrite from="regional biomass" to="biomass"/>
+		<rewrite from="H2 enduse" to="hydrogen"/>
+		<rewrite from="elect_td_ind" to="electricity"/>
+		<rewrite from="elect_td_res" to="electricity"/>
+		<rewrite from="elect_td_com" to="electricity"/>
+		<rewrite from="elect_td_trn" to="electricity"/>
+		<rewrite from="delivered biomass" to="biomass"/>
+		<rewrite from="elect_td_trn" to="electricity"/>
+		<rewrite from="delivered coal" to="coal"/>
+		<rewrite from="refined liquids industrial" to="refined liquids"/>
+		<rewrite from="delivered gas" to="natural gas"/>
+	</level>
+	</labelRewriteList>	
+    </supplyDemandQuery>
+	</aQuery>
+
+    
+	<!-- Agriculture -->
+	<aQuery>
+	<all-regions/>
+	<supplyDemandQuery title="Agriculture final energy by service and fuel">
+    <axis1 name="input">input</axis1>
+    <axis2 name="Year">demand-physical[@vintage]</axis2>
+    <xPath buildList="true" dataName="input" group="false" sumAll="false">*[@type='sector' and (@name='Agriculture' or (exists(child::keyword[@final-energy='Agriculture'])))]//
+               *[@type='input' and (@name='delivered biomass' or @name='delivered coal' or
+               @name='H2 enduse' or @name='elect_td_ind' or @name='wholesale gas' or
+               @name='refined liquids industrial')]/demand-physical/node()</xPath>
+    <comments>process heat cement assigned to cement</comments>
+    <labelRewriteList append-values="false">
+        <level name="input">
+            <rewrite from="elect_td_ind" to="electricity"/>
+			<rewrite from="refined liquids industrial" to="refined liquids"/>	
+        </level>
+    </labelRewriteList>
+    </supplyDemandQuery>
+	</aQuery>
+	
+	<aQuery>
+	<all-regions/>
+	<supplyDemandQuery title="final energy consumption by sector and fuel">
+    <axis1 name="input">input</axis1>
+    <axis2 name="Year">demand-physical[@vintage]</axis2>
+    <xPath buildList="true" dataName="input" group="false" sumAll="false">*[@type='sector' and ((@name='building' or @name='industry' or @name='transportation') or
+            (exists(child::keyword/@final-energy)))]//*[@type='input' and
+            not(@name='limestone' or @name='process heat cement' or @name='industrial energy use' or
+                @name='industrial feedstocks' or @name='renewable' or contains(@name, 'trn_') or @name='oil-credits')]/
+            demand-physical[@unit='EJ']/node()</xPath>
+    <comments/>
+    <labelRewriteList append-values="false">
+        <level name="input">
+            <rewrite from="elect_td_bld" to="electricity"/>
+            <rewrite from="wholesale gas" to="gas"/>
+            <rewrite from="regional coal" to="coal"/>
+            <rewrite from="refined liquids enduse" to="refined liquids"/>
+            <rewrite from="regional biomass" to="biomass"/>
+            <rewrite from="H2 enduse" to="hydrogen"/>
+            <rewrite from="elect_td_ind" to="electricity"/>
+            <rewrite from="delivered biomass" to="biomass"/>
+            <rewrite from="elect_td_trn" to="electricity"/>
+            <rewrite from="delivered coal" to="coal"/>
+            <rewrite from="refined liquids industrial" to="refined liquids"/>
+            <rewrite from="delivered gas" to="gas"/>
+        </level>
+    </labelRewriteList>
+</supplyDemandQuery>
+</aQuery>
+
+<aQuery>
+<supplyDemandQuery title="elec gen costs by tech">
+    <axis1 name="technology">technology</axis1>
+    <axis2 name="Year">cost</axis2>
+    <xPath buildList="true" dataName="cost" group="false" sumAll="false">*[@type='sector' and (@name='electricity' or @name='elect_td_bld')]/*[@type='subsector']/
+              *[@type='technology' and not(@name='elect_td_bld')]/cost/text()</xPath>
+    <comments/>
+</supplyDemandQuery>
+</aQuery>	
+
+<aQuery>
+<marketQuery title="CO2 prices">
+    <axis1 name="market">market</axis1>
+    <axis2 name="Year">market</axis2>
+    <xPath buildList="true" dataName="price" group="false" sumAll="false">Marketplace/market[true() and contains(@name,'CO2')]/price/node()</xPath>
+    <comments/>
+</marketQuery>
+</aQuery>
+
+<aQuery>
+<supplyDemandQuery title="fuel prices to buildings">
+    <axis1 name="fuel">sector</axis1>
+    <axis2 name="Year">cost</axis2>
+    <xPath buildList="true" dataName="cost" group="false" sumAll="false">*[@type='sector' and (@name='delivered gas' or @name='traditional biomass' or
+               @name='delivered coal' or @name='delivered biomass' or @name='elect_td_bld' or
+               @name='refined liquids enduse')]/cost/text()</xPath>
+    <comments/>
+</supplyDemandQuery>
+</aQuery>
+
+<aQuery>
+<supplyDemandQuery title="fuel prices to industry">
+    <axis1 name="fuel">sector</axis1>
+    <axis2 name="Year">cost</axis2>
+    <xPath buildList="true" dataName="cost" group="false" sumAll="false">*[@type='sector' and (@name='wholesale gas' or @name='delivered coal' or
+               @name='delivered biomass' or @name='H2 enduse' or @name='elect_td_ind' or
+               @name='refined liquids industrial')]/cost/text()</xPath>
+    <comments/>
+</supplyDemandQuery>
+</aQuery>
+
+<aQuery>
+<supplyDemandQuery title="fuel prices to transport">
+    <axis1 name="fuel">sector</axis1>
+    <axis2 name="Year">cost</axis2>
+    <xPath buildList="true" dataName="cost" group="false" sumAll="false">*[@type='sector' and (@name='delivered gas' or @name='delivered coal' or @name='elect_td_trn'
+               or @name='refined liquids enduse' or @name='H2 enduse')]/cost/text()</xPath>
+    <comments/>
+</supplyDemandQuery>
+</aQuery>
+
+    
+</queries>
+   
