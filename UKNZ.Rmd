@@ -71,22 +71,22 @@ queries <- listQueries(prj)# to check all queries added
 
 prj <- mergeProjects("data/GJNZ_Ref_V3_2024_10_12.dat","data/GJNZ_NZ70_V3_2024_10_12.dat")
 
-prj <- rgcam::loadProject(proj = "data/UK_Final_dec_transport_andindustrych.dat")
+prj <- rgcam::loadProject(proj = "data/UKNZ3feb.dat")
 
 
 
 #prj <- dropScenarios(prj,"Net_Zero")
 
-# queries <- listQueries(prj)
+ queries <- listQueries(prj)
 # 
 # #Renaming scenarios 
 # 
-# # Loop through each dataframe in the list
-# for (i in seq_along(queries)) {
-#   # Access the dataframe
-#   prj[["V3_Ref_Final_report"]][[queries[i]]][["scenario"]] <- "Reference"
-#   prj[["V3_NZ70_Final_report"]][[queries[i]]][["scenario"]] <- "Net_Zero"
-  
+# Loop through each dataframe in the list
+for (i in seq_along(queries)) {
+  # Access the dataframe
+  prj[["Baseline"]][[queries[i]]][["scenario"]] <- "Reference"
+  prj[["Netzero"]][[queries[i]]][["scenario"]] <- "Net_Zero"
+
 
   
 }
@@ -631,6 +631,12 @@ fe <- getQuery(prj,"final energy consumption by sector and fuel") %>%
   group_by(year,scenario) %>% 
   mutate(percent=value/sum(value),percent=percent*100)
 
+fe <- fe %>% 
+  mutate(value=ifelse(year==2020 & input=="traditional biomass",value-0.021782875,value)) %>% 
+  mutate(value=ifelse(year==2025 & input=="traditional biomass",value-0.020350346,value)) %>% 
+  mutate(value=ifelse(year==2030 & input=="traditional biomass",value-0.009090333,value)) %>% 
+  mutate(value=ifelse(year==2035 & input=="traditional biomass",value-0.004640063,value))
+
 fe_tot <- fe %>% 
   select(-percent) %>% 
   group_by(year,scenario) %>% 
@@ -695,6 +701,12 @@ fe3 <- getQuery(prj,"final energy consumption by aggregate sector and fuel") %>%
   ungroup() %>% 
   group_by(year,scenario) %>% 
   mutate(percent=value/sum(value),percent=percent*100)
+
+fe3 <- fe3 %>% 
+  mutate(value=ifelse(year==2020 & sector=="Building",value-0.021782875,value)) %>% 
+  mutate(value=ifelse(year==2025 & sector=="Building",value-0.020350346,value)) %>% 
+  mutate(value=ifelse(year==2030 & sector=="Building",value-0.009090333,value)) %>% 
+  mutate(value=ifelse(year==2035 & sector=="Building",value-0.004640063,value))
 
 fe3_inc <- fe3 %>% 
   filter(year %in% c(2020,2050)) %>% 
@@ -885,6 +897,12 @@ build <- getQuery(prj,"building final energy by service (Cooking) and fuel") %>%
   group_by(scenario,input,year) %>% 
   summarise(value=sum(value))
 
+build <- build %>% 
+  mutate(value=ifelse(year==2020 & input=="traditional biomass",value-0.021782875,value)) %>% 
+  mutate(value=ifelse(year==2025 & input=="traditional biomass",value-0.020350346,value)) %>% 
+  mutate(value=ifelse(year==2030 & input=="traditional biomass",value-0.009090333,value)) %>% 
+  mutate(value=ifelse(year==2035 & input=="traditional biomass",value-0.004640063,value)) 
+  
 
 build$scenario <- factor(build$scenario, levels = c("Reference", "Net_Zero"))
 
@@ -908,6 +926,12 @@ build4 <- getQuery(prj,"building total final energy by aggregate service") %>%
   filter(region=="UK") %>% 
   group_by(year,scenario) %>% 
   mutate(percent=(value/sum(value))*100)
+
+build4 <- build4 %>% 
+  mutate(value=ifelse(year==2020 & sector=="Cooking",value-0.021782875,value)) %>% 
+  mutate(value=ifelse(year==2025 & sector=="Cooking",value-0.020350346,value)) %>% 
+  mutate(value=ifelse(year==2030 & sector=="Cooking",value-0.009090333,value)) %>% 
+  mutate(value=ifelse(year==2035 & sector=="Cooking",value-0.004640063,value)) 
   
 build4$scenario <- build4$scenario <- factor(build4$scenario, levels = c("Reference", "Net_Zero"))
 
@@ -953,6 +977,12 @@ ggsave("output_plots/energy_increase.png",
 build6 <- getQuery(prj,"building final energy by fuel") %>% filter(region=="UK") %>% 
   group_by(scenario,year) %>% 
   mutate(percent=(value/sum(value))*100)
+
+build6 <- build6 %>% 
+  mutate(value=ifelse(year==2020 & input=="traditional biomass",value-0.021782875,value)) %>% 
+  mutate(value=ifelse(year==2025 & input=="traditional biomass",value-0.020350346,value)) %>% 
+  mutate(value=ifelse(year==2030 & input=="traditional biomass",value-0.009090333,value)) %>% 
+  mutate(value=ifelse(year==2035 & input=="traditional biomass",value-0.004640063,value))
 
 build6$scenario <- factor(build6$scenario, levels = c("Reference", "Net_Zero"))
 
