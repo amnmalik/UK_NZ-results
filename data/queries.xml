@@ -201,13 +201,13 @@
         <level name="sector">
             <rewrite from="Agriculture_enuse" to="Agriculture"/>
             <rewrite from="Chem_Fert_enuse" to="Industry"/>
-			<rewrite from="Chem_Fert_fsuse" to="Industry"/>
+			<rewrite from="Chem_Fert_fsuse" to="IPPU"/>
             <rewrite from="Fisheries_enuse" to="Industry"/>
 			<rewrite from="Other Industries_fsuse" to="Industry"/>
 			<rewrite from="process heat cement" to="Industry"/>
             <rewrite from="Food Processing_enuse" to="Industry"/>
             <rewrite from="Iron and Steel_enuse" to="Industry"/>
-            <rewrite from="Iron and Steel_fsuse" to="Industry"/>
+            <rewrite from="Iron and Steel_fsuse" to="IPPU"/>
             <rewrite from="Non-Ferrous Metals_enuse" to="Industry"/>
             <rewrite from="Other Industries_enuse" to="Industry"/>
             <rewrite from="Paper and Pulp_enuse" to="Industry"/>

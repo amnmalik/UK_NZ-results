@@ -69,7 +69,7 @@ queries <- listQueries(prj)# to check all queries added
 ```{r}
 # If you have multiple .dat files, with different scenarios, then you can merge them together
 
-prj <- mergeProjects("data/GJNZ_Ref_V3_2024_10_12.dat","data/GJNZ_NZ70_V3_2024_10_12.dat")
+# prj <- mergeProjects("data/GJNZ_Ref_V3_2024_10_12.dat","data/GJNZ_NZ70_V3_2024_10_12.dat")
 
 prj <- rgcam::loadProject(proj = "data/UKNZ3feb.dat")
 
@@ -192,7 +192,11 @@ geom_area(data = emi %>% filter(year>2015),mapping=aes(x = year,y=value*3.67,fil
   facet_wrap(~scenario)+
   scale_fill_manual(values = my_custom_palette[c(2,4,6,8,11)])+
   labs(y = expression(Emissions~(MTCO[2])),x="",caption = "Indsutry emissions includes emission from fuel processing")+
-  scale_y_continuous(breaks = seq(0, 35,by=5))
+  scale_y_continuous(breaks = seq(0, 35,by=5))+
+  theme(axis.text.x = element_text(size = 12),
+         legend.title = element_blank(),
+        legend.position="top",
+        legend.justification = c(0,1))
 
 ggsave("output_plots/emissions.png",
   device = "png", dpi = "print",
@@ -208,7 +212,11 @@ geom_line(data = emi %>% filter(year>2015),mapping=aes(x = year,y=value*3.67,col
   #theme_pubclean(base_size = 12)+
    scale_color_manual(values = my_custom_palette[c(2,4,6,8,10)])+
   labs(y=expression(Emissions~(MTCO[2])),x="")+
-  theme(axis.text.x = element_text(size = 10, angle = 45, vjust = 0.8, hjust = 0.8))
+  theme(axis.text.x = element_text(size = 10, angle = 45, vjust = 0.8, hjust = 0.8))+
+  theme(axis.text.x = element_text(size = 12),
+         legend.title = element_blank(),
+        legend.position="top",
+        legend.justification = c(0,1))
    # geom_label(data = first_last_years, 
    #           aes(x = year, y = total_value, label = round(total_value, 0)),
    #           vjust = -0.2, hjust = 0.5, size = 3, fill = "white", color = "black")
@@ -219,7 +227,7 @@ ggsave("output_plots/sector_emissions.png",
 )
 ######################
 ######################  
-ggplot(emi %>% filter(year %in% c(2020,2070)), 
+ggplot(emi %>% filter(year %in% c(2020,2050)), 
        mapping = aes(x = "", y = percent, fill = sector, group = scenario)) +
   geom_col(color = "white", size = 1) +
   facet_grid(year~scenario) +
@@ -228,7 +236,7 @@ ggplot(emi %>% filter(year %in% c(2020,2070)),
             hjust = 1,  # Adjust hjust for label placement
             show.legend = FALSE) +
   #theme_void() +
-  scale_fill_manual(values = my_custom_palette)+
+  scale_fill_manual(values = my_custom_palette[c(2,4,6,8,11)])+
   labs(y = "Share of emissions by sector")
 
 ggsave("output_plots/emissions_share.png",
@@ -651,7 +659,7 @@ geom_area(fe %>% filter(year>2015,year<2075),mapping=aes(x=year,y=value,fill=inp
   facet_wrap(~scenario) +
   # theme_pubclean(base_size = 14)+
    scale_fill_manual(values = my_custom_palette)+
-  labs(y="Final Energy Consumption mix (EJ)",x="")+
+  labs(y="Final Energy Consumption mix (EJ)",x="")
  scale_y_continuous(breaks = seq(0, 20, by = 2))
 #   theme(legend.position = "top", 
 #         legend.box = "horizontal",
@@ -1055,7 +1063,7 @@ ggsave("output_plots/building_floorspace.png",
 # Industry
 ```{r}
 industry <- getQuery(prj,"final energy consumption by sector and fuel") %>% 
-  filter(region=="UK") %>% 
+  filter(region=="UK",sector!="Agriculture_enuse") %>% 
   filter(!str_detect(sector, "trn|resid|comm|fsuse")) %>% 
   group_by(scenario,input,year) %>% 
   summarise(value=sum(value)) %>% 
@@ -1085,7 +1093,7 @@ industry$scenario <- factor(industry$scenario, levels = c("Reference", "Net_Zero
 a <- ggplot()+
 geom_area(industry %>% filter(year>2015),mapping=aes(x=year,y=value,fill=input))+
   facet_wrap(~scenario) +
-  scale_fill_manual(values = my_custom_palette)+
+  scale_fill_manual(values = my_custom_palette[c(2, 4, 6, 8, 10, 12)]) +
   theme(legend.title = element_blank(),
         legend.position="top",
         legend.justification = c(0,1))+
@@ -1103,7 +1111,7 @@ geom_area(industry %>% filter(year>2015),mapping=aes(x=year,y=value,fill=input))
 b <- ggplot(industry %>% filter(year %in% c(2020, 2050, 2070)),mapping=aes(x=as.factor(year),y=percent,fill=input))+
   geom_bar(stat = "identity")+
   facet_wrap(~scenario) +
- scale_fill_manual(values = my_custom_palette)+
+  scale_fill_manual(values = my_custom_palette[c(2, 4, 6, 8, 10, 12)]) +
 #    scale_fill_viridis_d()+
   labs(y = "Share of fuels (%)", x = "Year")+
     theme(legend.title = element_blank(),
@@ -1112,7 +1120,7 @@ b <- ggplot(industry %>% filter(year %in% c(2020, 2050, 2070)),mapping=aes(x=as.
 
   geom_text(aes(label = ifelse(percent > 5, paste0(round(percent, 0), "%"), "")), 
             position = position_stack(vjust = 0.5), 
-            size = 3,color="white") +
+            size = 3,color="black") +
   coord_cartesian(ylim = c(0, 100))+
     labs(x="")+
   guides(fill = guide_legend(nrow = 1))
@@ -1123,7 +1131,11 @@ ggsave("output_plots/industry_fuel_share.png",
 )
 
 
-a+b + plot_layout(guides = "collect")  #plot_annotation(tag_levels = "a")
+a+b + plot_layout(guides = "collect")+  #plot_annotation(tag_levels = "a")+     
+theme(legend.title = element_blank(),
+        legend.position="top",
+        legend.justification = c(0,1))
+
 
 ggsave("output_plots/industry_fuel_total_and_share.png",
   device = "png", dpi = "print",
