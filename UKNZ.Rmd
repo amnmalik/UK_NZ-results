@@ -363,12 +363,18 @@ writexl::write_xlsx(x = ei,"output_data/emission_intensity_of_gdp.xlsx")
 # Emission intensity of Energy (MtCo2/EJ)
 ```{r}
 fe3 <- getQuery(prj,"final energy consumption by aggregate sector and fuel") %>% 
-  filter(region=="UK") %>% 
-  # agriculture energy use is considered in industry
-  mutate(sector=mgsub::mgsub( sector,pattern = c("Agriculture"),replacement = c("Industry"))) %>% 
+  filter(region=="UK") %>%
   group_by(scenario,sector,year) %>% 
   summarise(value=sum(value)) %>% 
-  ungroup() 
+  ungroup() %>% 
+  group_by(year,scenario) %>% 
+  mutate(percent=value/sum(value),percent=percent*100)
+
+fe3 <- fe3 %>% 
+  mutate(value=ifelse(year==2020 & sector=="Building",value-0.021782875,value)) %>% 
+  mutate(value=ifelse(year==2025 & sector=="Building",value-0.020350346,value)) %>% 
+  mutate(value=ifelse(year==2030 & sector=="Building",value-0.009090333,value)) %>% 
+  mutate(value=ifelse(year==2035 & sector=="Building",value-0.004640063,value))
   
 
 energy_intensity <- left_join(fe3,emi,by=c("scenario","year","sector")) %>% filter(year>2010) %>% 
@@ -651,7 +657,6 @@ fe <- getQuery(prj,"final energy consumption by sector and fuel") %>%
   group_by(scenario,input,year) %>% 
   summarise(value=sum(value)) %>% 
   ungroup() %>% 
- # mutate(scenario="BAU_GJ") %>% 
   group_by(year,scenario) %>% 
   mutate(percent=value/sum(value),percent=percent*100)
 
