@@ -5,8 +5,7 @@
 *.rdx
 
 .Ruserdata
-output_plots
 *.xlsx
-data/*.dat
+
 /UKNZ_files
 UKNZ_cache/html/__packages
